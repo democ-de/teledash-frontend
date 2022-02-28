@@ -1,4 +1,4 @@
-# Teledash-Frontend
+# Teledash frontend
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 It's based on [this boilerplate](https://github.com/alan2207/bulletproof-react/) (forked 08.01.2022)

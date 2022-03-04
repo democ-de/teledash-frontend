@@ -40,9 +40,6 @@ export interface paths {
     delete: operations["users_user_accounts__id__delete"];
     patch: operations["users_user_accounts__id__patch"];
   };
-  "/storage/{bucket_name}/{object_name}": {
-    get: operations["get_file_storage__bucket_name___object_name__get"];
-  };
   "/messages": {
     get: operations["list_messages_messages_get"];
   };
@@ -74,6 +71,12 @@ export interface paths {
   };
   "/users": {
     get: operations["list_users_users_get"];
+  };
+  "/metrics": {
+    get: operations["list_metrics_metrics_get"];
+  };
+  "/storage/{bucket_name}/{object_name}": {
+    get: operations["get_file_storage__bucket_name___object_name__get"];
   };
 }
 
@@ -442,6 +445,23 @@ export interface components {
       /** Detail */
       detail: Partial<string> & Partial<{ [key: string]: string }>;
     };
+    /** GlobalMetrics */
+    GlobalMetrics: {
+      /** Users Count */
+      users_count?: number;
+      /** Chats Count */
+      chats_count?: number;
+      /** Messages Count */
+      messages_count?: number;
+      /** Photos Count */
+      photos_count?: number;
+      /** Videos Count */
+      videos_count?: number;
+      /** Voices Count */
+      voices_count?: number;
+      growth_total?: components["schemas"]["AggregatedMetrics"];
+      activity_total?: components["schemas"]["AggregatedMetrics"];
+    };
     /** HTTPValidationError */
     HTTPValidationError: {
       /** Detail */
@@ -722,6 +742,8 @@ export interface components {
       updated_at?: string;
       /** Scraped By */
       scraped_by?: string;
+      /** In Chats */
+      in_chats?: components["schemas"]["ChatRef"][];
     };
     /** UserRef */
     UserRef: {
@@ -1064,40 +1086,11 @@ export interface operations {
       };
     };
   };
-  get_file_storage__bucket_name___object_name__get: {
-    parameters: {
-      path: {
-        bucket_name: string;
-        object_name: string;
-      };
-      query: {
-        attachment?: boolean;
-      };
-    };
-    responses: {
-      /** Requested file from storage. Can be of any media type. */
-      200: {
-        content: {
-          "*/*": unknown;
-        };
-      };
-      /** Any other error why the file could not be fetched. */
-      400: unknown;
-      /** The bucket or file was not found. */
-      404: unknown;
-      /** Validation Error */
-      422: {
-        content: {
-          "application/json": components["schemas"]["HTTPValidationError"];
-        };
-      };
-    };
-  };
   list_messages_messages_get: {
     parameters: {
       query: {
-        "from_user_ids[]"?: number[];
-        "chat_ids[]"?: number[];
+        from_user_ids?: number[];
+        chat_ids?: number[];
         date_from?: string;
         date_to?: string;
         is_empty?: boolean;
@@ -1442,6 +1435,45 @@ export interface operations {
           "application/json": components["schemas"]["PaginatedUsers"];
         };
       };
+      /** Validation Error */
+      422: {
+        content: {
+          "application/json": components["schemas"]["HTTPValidationError"];
+        };
+      };
+    };
+  };
+  list_metrics_metrics_get: {
+    responses: {
+      /** List all metrics */
+      200: {
+        content: {
+          "application/json": components["schemas"]["GlobalMetrics"];
+        };
+      };
+    };
+  };
+  get_file_storage__bucket_name___object_name__get: {
+    parameters: {
+      path: {
+        bucket_name: string;
+        object_name: string;
+      };
+      query: {
+        attachment?: boolean;
+      };
+    };
+    responses: {
+      /** Requested file from storage. Can be of any media type. */
+      200: {
+        content: {
+          "*/*": unknown;
+        };
+      };
+      /** Any other error why the file could not be fetched. */
+      400: unknown;
+      /** The bucket or file was not found. */
+      404: unknown;
       /** Validation Error */
       422: {
         content: {

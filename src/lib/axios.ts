@@ -1,4 +1,5 @@
 import Axios, { AxiosRequestConfig } from "axios";
+import qs from "qs";
 import { API_URL } from "config";
 import { useNotificationStore } from "stores/notifications";
 import history from "lib/history";
@@ -21,6 +22,10 @@ function authRequestInterceptor(config: AxiosRequestConfig) {
 
 export const axios = Axios.create({
   baseURL: API_URL,
+  paramsSerializer: function (params) {
+    // make arrays in query params match FastAPI array format: https://fastapi.tiangolo.com/tutorial/query-params-str-validations/#query-parameter-list-multiple-values
+    return qs.stringify(params, { arrayFormat: "repeat" });
+  },
 });
 
 axios.interceptors.request.use(authRequestInterceptor);

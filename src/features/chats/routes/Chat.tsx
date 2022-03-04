@@ -223,24 +223,29 @@ const ChatMessages = ({ chatId }: { chatId: number }) => {
   const filterId = `chat-filter-${chatId}`;
   const filterKey = "messages";
   const createFilter = useFilterStore((state) => state.createFilter);
-  createFilter({
-    id: filterId,
-    activeKey: filterKey,
-    options: {
-      messages: {
-        "chat_ids[]": [chatId],
+  const filters = useFilterStore((state) => state.filters);
+
+  if (typeof filters[filterId] === "undefined") {
+    createFilter({
+      id: filterId,
+      activeKey: filterKey,
+      options: {
+        messages: {
+          chat_ids: [chatId],
+        },
       },
-    },
-  });
+    });
+  }
+
   const setFilterOptions = useFilterStore((state) => state.setFilterOptions);
-  const filterOptions = useFilterStore((state) =>
-    state.getFilterOptions(filterId)
+  const messageFilterOptions = useFilterStore(
+    (state) => state.getFilterOptions(filterId).messages
   );
   const updateFilters = useCallback(
     (options: UpdateFiltersOptions) => {
-      setFilterOptions("search", options);
+      setFilterOptions(filterId, options);
     },
-    [setFilterOptions]
+    [filterId, setFilterOptions]
   );
 
   return (
@@ -248,10 +253,10 @@ const ChatMessages = ({ chatId }: { chatId: number }) => {
       <SearchForm
         filterKey={filterKey}
         onFilterKeyChange={(key) => null}
-        filterOptions={filterOptions}
+        filterOptions={{ messages: messageFilterOptions }}
         onFilterUpdate={updateFilters}
       />
-      <MessageList queryParams={filterOptions.messages} />
+      <MessageList queryParams={messageFilterOptions} />
     </div>
   );
 };
@@ -352,7 +357,7 @@ export const Chat = () => {
       </div>
 
       {/* Message */}
-      <div className="mt-6">
+      <div className="mt-8">
         <h2 className="text-xl font-bold leading-7 sm:text-2xl mb-6">
           Messages
         </h2>

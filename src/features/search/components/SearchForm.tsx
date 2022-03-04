@@ -90,6 +90,7 @@ export const SearchForm = ({
     resetField,
     formState: { errors, isValid },
   } = methods;
+  const filterOptionsKeys = Object.keys(filterOptions) as FilterKeys[];
   const [isShowingFilterPanel, setIsShowingFilterPanel] = useState(false);
   const handleFilterChange = useCallback(
     (key) => {
@@ -143,7 +144,7 @@ export const SearchForm = ({
     <div>
       <div className="space-y-4 lg:space-y-0 lg:space-x-4 lg:flex">
         <div className="flex w-full">
-          {(Object.keys(filterOptions) as Array<FilterKeys>).map((key) => (
+          {filterOptionsKeys.map((key) => (
             <TextInputGroup
               key={key}
               id={`search-field-${key}`}
@@ -163,19 +164,21 @@ export const SearchForm = ({
           ))}
         </div>
         <div className="space-y-4 divide-y divide-gray-200 sm:divide-x-0 sm:space-y-0 sm:divide-y-0 sm:flex sm:items-end sm:justify-between lg:justify-start lg:space-x-4">
-          <RadioGroup
-            label="Search for"
-            hiddenLabel
-            value={filterKey}
-            onChange={(val: FilterKeys) => {
-              onFilterKeyChange(val);
-              handleFilterChange(val);
-            }}
-            options={Object.keys(filterOptions).map((key) => ({
-              label: startCase(key),
-              value: key,
-            }))}
-          />
+          {filterOptionsKeys.length > 1 && (
+            <RadioGroup
+              label="Search for"
+              hiddenLabel
+              value={filterKey}
+              onChange={(val: FilterKeys) => {
+                onFilterKeyChange(val);
+                handleFilterChange(val);
+              }}
+              options={filterOptionsKeys.map((key) => ({
+                label: startCase(key),
+                value: key,
+              }))}
+            />
+          )}
           <div className="pt-4 sm:pt-0">
             <Button
               startIcon={isShowingFilterPanel ? mdiCloseCircle : mdiFilter}

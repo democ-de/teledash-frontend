@@ -23,6 +23,8 @@ const parseActiveFilters = (params?: { [key: string]: any }): ActiveFilters => {
       result.push({ label: startCase(key), key });
     } else if (Array.isArray(value)) {
       result.push({ label: `${startCase(key)} (${value.length})`, key });
+    } else if (["date_from", "date_to"].includes(key)) {
+      result.push({ label: `${startCase(key)}`, key });
     } else {
       result.push({ label: `${startCase(key)}: ${startCase(value)}`, key });
     }

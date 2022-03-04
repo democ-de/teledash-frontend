@@ -11,7 +11,7 @@ import { SearchFormInputs } from "..";
 const dateInputOptions = {
   setValueAs: (v: string) => {
     if (!v) {
-      return v;
+      return undefined;
     }
 
     // convert to UTC date in ISO 8601 format

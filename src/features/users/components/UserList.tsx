@@ -1,26 +1,13 @@
 import { Button, Spinner } from "components/Elements";
-import { Badge, BadgeProps } from "components/Elements/Badge";
+import { Badge } from "components/Elements";
 import { UserLink } from "features/users";
 import { startCase } from "lodash";
 import { Fragment } from "react";
 import { GetUsersParams, User } from "types";
-import { useUsers } from "..";
-
-const availableFlags = [
-  "is_deleted",
-  "is_bot",
-  "is_verified",
-  "is_restricted",
-  "is_scam",
-  "is_fake",
-  "is_support",
-];
+import { useUsers, createUserBadgesArray } from "..";
 
 const UserListItem = (props: User) => {
-  const propKeys = Object.keys(props) as Array<keyof typeof props>;
-  const badges: BadgeProps[] = propKeys
-    .filter((key) => availableFlags.includes(key) && props[key] === true)
-    .map((flag) => ({ label: flag.replace("is_", ""), variant: "orange" }));
+  const badgesArray = createUserBadgesArray(props);
 
   return (
     <li>
@@ -30,9 +17,9 @@ const UserListItem = (props: User) => {
             <div>
               <UserLink user={props} className="truncate font-medium" />
             </div>
-            {badges.length > 0 && (
+            {badgesArray.length > 0 && (
               <div className="flex items-center space-x-2 whitespace-nowrap mt-1.5 lg:mt-0">
-                {badges.map(({ label, variant }) => (
+                {badgesArray.map(({ label, variant }) => (
                   <Badge
                     key={label}
                     label={startCase(label)}

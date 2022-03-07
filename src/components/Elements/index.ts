@@ -5,3 +5,7 @@ export * from "./Drawer";
 export * from "./Link";
 export * from "./Spinner";
 export * from "./Table";
+export * from "./Badge";
+export * from "./ECharts";
+export * from "./Box";
+export * from "./TooltipLink";

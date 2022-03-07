@@ -1,4 +1,4 @@
-import { BadgeProps } from "components/Elements/Badge";
+import { BadgeProps } from "components/Elements";
 import { startCase } from "lodash";
 import { Chat } from "types";
 

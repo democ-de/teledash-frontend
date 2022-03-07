@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { User, UserRef } from "types";
-import { TooltipLink } from "components/Elements/TooltipLink";
+import { TooltipLink } from "components/Elements";
 
 const stringHasLetters = (text: string) => /\p{Letter}/gu.test(text);
 
@@ -46,7 +46,7 @@ export const UserLink = ({ user, className, link }: UserLinkProps) => {
         interactive: true,
       }}
       className={clsx("hover:underline", className)}
-      to={typeof link === "string" ? link : "/link/to/user"}
+      to={typeof link === "string" ? link : `/user/${user._id}`}
     >
       {displayName}
     </TooltipLink>

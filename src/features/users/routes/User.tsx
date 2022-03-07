@@ -1,16 +1,12 @@
 import { useParams } from "react-router-dom";
 import { ContentLayout } from "components/Layout";
 import { useCallback } from "react";
-import { useChat, createDisplayNameFromChat, createChatBadgesArray } from "..";
-import {
-  Box,
-  Spinner,
-  Badge,
-  ReactECharts,
-  ReactEChartsProps,
-} from "components/Elements";
+import { useUser, createUserBadgesArray, createDisplayNameFromUser } from "..";
+import { Box, Spinner } from "components/Elements";
+import { Badge, ReactECharts, ReactEChartsProps } from "components/Elements";
+import { ReactNode } from "react";
 import { formatNumber } from "utils/formatNumber";
-import { ChatMetrics } from "types";
+import { UserMetrics } from "types";
 import { parseDate } from "lib/date";
 import {
   SearchForm,
@@ -22,7 +18,7 @@ import { MessageList } from "features/messages";
 const ActivityChart = ({
   metric,
 }: {
-  metric: ChatMetrics["activity_total"];
+  metric: UserMetrics["activity_total"];
 }) => {
   if (!metric || !metric.start_date || !metric.data) return null;
 
@@ -95,78 +91,6 @@ const ActivityChart = ({
   return <ReactECharts option={option} />;
 };
 
-const GrowthChart = ({ metric }: { metric: ChatMetrics["growth_total"] }) => {
-  if (!metric || !metric.start_date || !metric.data) return null;
-
-  let base = +parseDate(metric.start_date);
-  let oneHour = 3600 * 1000;
-  let date = [];
-
-  for (let i = 0; i < metric.data.length; i++) {
-    var now = new Date((base += oneHour));
-    var time = now.getHours().toString().padStart(2, "0") + ":00";
-    date.push(
-      [now.getFullYear(), now.getMonth() + 1, now.getDate()].join("/") +
-        " " +
-        time
-    );
-  }
-
-  const option: ReactEChartsProps["option"] | undefined = {
-    tooltip: {
-      trigger: "axis",
-      formatter: "{c} users on {b}",
-      position: function (pt) {
-        return [pt[0], "10%"];
-      },
-    },
-    grid: {
-      left: 55,
-      top: 30,
-      right: 10,
-    },
-    toolbox: {
-      feature: {
-        dataZoom: {
-          yAxisIndex: "none",
-        },
-        restore: {},
-        saveAsImage: {},
-      },
-    },
-    dataZoom: [
-      {
-        type: "inside",
-        start: 0,
-        end: 100,
-      },
-      {
-        start: 0,
-        end: 100,
-      },
-    ],
-    xAxis: {
-      type: "category",
-      data: date,
-    },
-    yAxis: {
-      type: "value",
-    },
-    series: [
-      {
-        name: "Growth",
-        type: "line",
-        data: metric.data,
-        smooth: true,
-        connectNulls: true,
-        zlevel: 1,
-      },
-    ],
-  };
-
-  return <ReactECharts option={option} />;
-};
-
 const ChatMessages = ({ chatId }: { chatId: number }) => {
   const filterId = `chat-filter-${chatId}`;
   const filterKey = "messages";
@@ -209,32 +133,33 @@ const ChatMessages = ({ chatId }: { chatId: number }) => {
   );
 };
 
-export const Chat = () => {
-  let { chatId } = useParams() as { chatId: string };
-  const chatQuery = useChat({ chatId });
+export const User = () => {
+  let { userId } = useParams() as { userId: string };
+  const userQuery = useUser({ userId });
 
-  if (chatQuery.isLoading) {
+  if (userQuery.isLoading) {
     return (
       <ContentLayout>
         <div className="flex items-center text-gray-600">
           <Spinner size="sm" className="mr-2" />
-          <div>Loading Chat…</div>
+          <div>Loading User…</div>
         </div>
       </ContentLayout>
     );
   }
 
-  if (!chatQuery.data) return null;
+  if (!userQuery.data) return null;
 
-  const chat = chatQuery.data;
-  const badgesArray = createChatBadgesArray(chat);
-  const messageCountLastDay = chat.metrics?.activity_last_day?.sum || 0;
-  const messageCountTotal = chat.metrics?.activity_total?.sum || 0;
-  const membersGrowthLastDay = chat.metrics?.growth_last_day?.diff || 0;
-  const membersCountTotal = chat.members_count || 0;
+  const user = userQuery.data;
+  const badgesArray = createUserBadgesArray(user);
+  console.warn(user);
+  const messageCountLastDay = user.metrics?.activity_last_day?.sum || 0;
+  const messageCountTotal = user.metrics?.activity_total?.sum || 0;
+  // const membersGrowthLastDay = user.metrics?.growth_last_day?.diff || 0;
+  // const membersCountTotal = user.members_count || 0;
 
   return (
-    <ContentLayout title={createDisplayNameFromChat(chat)}>
+    <ContentLayout title={createDisplayNameFromUser(user)}>
       {badgesArray.length > 0 && (
         <div className="flex items-center space-x-2 whitespace-nowrap mt-1.5 lg:mt-0">
           {badgesArray.map(({ label, variant }) => (
@@ -244,12 +169,12 @@ export const Chat = () => {
       )}
 
       <div className="mt-4 space-y-4 xl:space-y-0 xl:grid xl:grid-cols-2 xl:gap-4">
-        {/* descriptions */}
-        <Box title="Description">
-          <div className="whitespace-pre-wrap">{chat.description}</div>
+        <Box title="Messages per day">
+          <div className="h-80">
+            <ActivityChart metric={user.metrics?.activity_total} />
+          </div>
         </Box>
 
-        {/* meta info */}
         <div className="space-y-4 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-4 xl:flex xl:items-start">
           {/* message count */}
           <Box title="Activity last 24h">
@@ -266,46 +191,30 @@ export const Chat = () => {
               {formatNumber(messageCountTotal)} saved
             </div>
           </Box>
-
-          {/* members count */}
-          <Box title="Growth last 24h">
-            <div className="text-3xl">
-              {membersGrowthLastDay > 0 ? (
-                <span className="text-green-600">
-                  +{formatNumber(membersGrowthLastDay)}
-                </span>
-              ) : (
-                0
-              )}
-            </div>
-            <div className="text-sm text-gray-500">
-              {formatNumber(membersCountTotal)} total
-            </div>
-          </Box>
         </div>
 
         {/* Activity graph */}
-        <Box title="Activity">
+        {/* <Container title="Activity">
           <div className="h-80">
-            <ActivityChart metric={chat.metrics?.activity_total} />
+            <ActivityChart metric={user.metrics?.activity_total} />
           </div>
-        </Box>
+        </Container> */}
 
         {/* Growth graph */}
-        <Box title="Growth">
+        {/* <Container title="Growth">
           <div className="h-80">
-            <GrowthChart metric={chat.metrics?.growth_total} />
+            <GrowthChart metric={user.metrics?.growth_total} />
           </div>
-        </Box>
+        </Container> */}
       </div>
 
       {/* Message */}
-      <div className="mt-8">
+      {/* <div className="mt-8">
         <h2 className="text-xl font-bold leading-7 sm:text-2xl mb-6">
           Messages
         </h2>
         <ChatMessages chatId={parseInt(chatId)} />
-      </div>
+      </div> */}
     </ContentLayout>
   );
 };

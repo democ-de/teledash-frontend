@@ -1,8 +1,7 @@
 import { mdiAccountMultiple } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Button, Spinner } from "components/Elements";
-import { Badge } from "components/Elements/Badge";
-import { ReactECharts, ReactEChartsProps } from "components/Elements/ECharts";
+import { Badge, ReactECharts, ReactEChartsProps } from "components/Elements";
 import { useChats } from "features/chats";
 import { Fragment } from "react";
 import { GetChatsParams } from "types";

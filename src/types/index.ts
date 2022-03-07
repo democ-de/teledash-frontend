@@ -25,3 +25,4 @@ export type GetUsersResponse =
   API.paths["/users"]["get"]["responses"]["200"]["content"]["application/json"];
 export type User = API.components["schemas"]["UserOut"];
 export type UserRef = API.components["schemas"]["UserRef"];
+export type UserMetrics = API.components["schemas"]["UserMetrics"];

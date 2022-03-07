@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { TooltipLink } from "components/Elements/TooltipLink";
+import { TooltipLink } from "components/Elements";
 import { Chat, ChatRef } from "types";
 
 export const createDisplayNameFromChat = (chat: Chat | ChatRef) =>

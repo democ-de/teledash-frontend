@@ -1,4 +1,4 @@
-import { Badge } from "components/Elements/Badge";
+import { Badge } from "components/Elements";
 import { startCase } from "lodash";
 import { useState, useEffect } from "react";
 import { FilterKeys, FilterValues } from "..";

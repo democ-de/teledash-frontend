@@ -2,8 +2,7 @@ import Icon from "@mdi/react";
 import { mdiExclamationThick, mdiInformation } from "@mdi/js";
 import * as React from "react";
 
-import { Button } from "components/Elements/Button";
-import { Dialog, DialogTitle } from "components/Elements/Dialog";
+import { Button, Dialog, DialogTitle } from "components/Elements";
 import { useDisclosure } from "hooks/useDisclosure";
 
 export type ConfirmationDialogProps = {

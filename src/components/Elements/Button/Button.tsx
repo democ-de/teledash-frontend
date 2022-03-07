@@ -2,7 +2,7 @@ import * as React from "react";
 import clsx from "clsx";
 import Icon from "@mdi/react";
 
-import { Spinner } from "components/Elements/Spinner";
+import { Spinner } from "components/Elements";
 
 const variants = {
   primary:

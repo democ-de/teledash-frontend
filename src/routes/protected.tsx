@@ -6,6 +6,7 @@ import { MainLayout } from "components/Layout";
 import { lazyImport } from "utils/lazyImport";
 import { Search } from "features/search";
 import { Chat } from "features/chats";
+import { User } from "features/users";
 
 const { Dashboard } = lazyImport(() => import("features/misc"), "Dashboard");
 const { Profile } = lazyImport(() => import("features/accounts"), "Profile");
@@ -35,6 +36,7 @@ export const protectedRoutes = [
       { path: "/search", element: <Search /> },
       { path: "/account", element: <Profile /> },
       { path: "/chat/:chatId", element: <Chat /> },
+      { path: "/user/:userId", element: <User /> },
       { path: "*", element: <Navigate to="." /> },
     ],
   },

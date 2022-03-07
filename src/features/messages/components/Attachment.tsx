@@ -7,7 +7,6 @@ import {
   mdiFileImageOutline,
   mdiFileVideoOutline,
   mdiGamepadVariantOutline,
-  mdiLinkVariant,
   mdiMapMarker,
   mdiMapMarkerStarOutline,
   mdiMicrophone,
@@ -25,7 +24,6 @@ import { useEffect, useState } from "react";
 import {
   Message as MessageType,
   MessageAttachment,
-  MessageAttachmentStorageRef,
   MessageAttachmentType,
 } from "types";
 import Icon from "@mdi/react";

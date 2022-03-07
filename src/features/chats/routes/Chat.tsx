@@ -53,15 +53,6 @@ const ActivityChart = ({
   }
 
   const option: ReactEChartsProps["option"] | undefined = {
-    // dataset: {
-    //   source: [
-    //     ["Commodity", "Owned", "Financed"],
-    //     ["Commodity 1", 4, 1],
-    //     ["Commodity 2", 2, 4],
-    //     ["Commodity 3", 3, 6],
-    //     ["Commodity 4", 5, 3],
-    //   ],
-    // },
     tooltip: {
       trigger: "axis",
       formatter: "{c} messages on {b}",
@@ -69,15 +60,10 @@ const ActivityChart = ({
         return [pt[0], "10%"];
       },
     },
-    // legend: {
-    //   data: ["Owned", "Financed"],
-    // },
     grid: {
-      left: "5%",
+      left: 30,
       top: 30,
-      right: "5%",
-      // bottom: 30,
-      // height: 30,
+      right: 10,
     },
     toolbox: {
       feature: {
@@ -102,11 +88,9 @@ const ActivityChart = ({
     xAxis: {
       type: "category",
       data: date,
-      // show: false,
     },
     yAxis: {
       type: "value",
-      // show: false,
     },
     series: [
       {
@@ -116,10 +100,6 @@ const ActivityChart = ({
         smooth: true,
         connectNulls: true,
         zlevel: 1,
-        // symbol: "none",
-        // label: {
-        //   show: true,
-        // },
       },
     ],
   };
@@ -145,31 +125,17 @@ const GrowthChart = ({ metric }: { metric: ChatMetrics["growth_total"] }) => {
   }
 
   const option: ReactEChartsProps["option"] | undefined = {
-    // dataset: {
-    //   source: [
-    //     ["Commodity", "Owned", "Financed"],
-    //     ["Commodity 1", 4, 1],
-    //     ["Commodity 2", 2, 4],
-    //     ["Commodity 3", 3, 6],
-    //     ["Commodity 4", 5, 3],
-    //   ],
-    // },
     tooltip: {
       trigger: "axis",
-      formatter: "{c} new members on {b}",
+      formatter: "{c} users on {b}",
       position: function (pt) {
         return [pt[0], "10%"];
       },
     },
-    // legend: {
-    //   data: ["Owned", "Financed"],
-    // },
     grid: {
-      left: "5%",
+      left: 55,
       top: 30,
-      right: "5%",
-      // bottom: 30,
-      // height: 30,
+      right: 10
     },
     toolbox: {
       feature: {
@@ -194,11 +160,9 @@ const GrowthChart = ({ metric }: { metric: ChatMetrics["growth_total"] }) => {
     xAxis: {
       type: "category",
       data: date,
-      // show: false,
     },
     yAxis: {
       type: "value",
-      // show: false,
     },
     series: [
       {
@@ -208,10 +172,6 @@ const GrowthChart = ({ metric }: { metric: ChatMetrics["growth_total"] }) => {
         smooth: true,
         connectNulls: true,
         zlevel: 1,
-        // symbol: "none",
-        // label: {
-        //   show: true,
-        // },
       },
     ],
   };
@@ -282,7 +242,7 @@ export const Chat = () => {
   const badgesArray = createChatBadgesArray(chat);
   const messageCountLastDay = chat.metrics?.activity_last_day?.sum || 0;
   const messageCountTotal = chat.metrics?.activity_total?.sum || 0;
-  const membersGrowthLastDay = chat.metrics?.growth_last_day?.sum || 0;
+  const membersGrowthLastDay = chat.metrics?.growth_last_day?.diff || 0;
   const membersCountTotal = chat.members_count || 0;
 
   return (
@@ -299,10 +259,7 @@ export const Chat = () => {
         {/* descriptions */}
         <Container title="Description">
           <div className="whitespace-pre-wrap">
-            Wir geben jeder Patriotin und jedem Patrioten eine Stimme und werden
-            sie oder ihn so gut wie möglich unterstützen. Wenn wir alle
-            zusammenhalten, dann ist es bald geschafft. Gruppenregeln: /rules
-            Probleme? @admin im Chat tippen.
+            {chat.description}
           </div>
         </Container>
 

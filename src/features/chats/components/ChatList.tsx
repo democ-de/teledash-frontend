@@ -99,7 +99,6 @@ const defaultQueryParams: GetChatsParams = {
     pinned_message: 0,
     invite_link: 0,
     photo: 0,
-    language_other: 0,
   }),
 };
 

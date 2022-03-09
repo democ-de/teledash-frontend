@@ -14,22 +14,10 @@ const ChatListItem = (props: Chat) => {
   const badgesArray = createChatBadgesArray(props);
   const activityLastDay: ReactEChartsProps["option"] | undefined = props.metrics
     ?.activity_last_day && {
-    // dataset: {
-    //   source: [
-    //     ["Commodity", "Owned", "Financed"],
-    //     ["Commodity 1", 4, 1],
-    //     ["Commodity 2", 2, 4],
-    //     ["Commodity 3", 3, 6],
-    //     ["Commodity 4", 5, 3],
-    //   ],
-    // },
     tooltip: {
       trigger: "axis",
       formatter: "{c} messages at {b}",
     },
-    // legend: {
-    //   data: ["Owned", "Financed"],
-    // },
     grid: {
       left: 0,
       right: 0,
@@ -54,9 +42,6 @@ const ChatListItem = (props: Chat) => {
         connectNulls: true,
         zlevel: 1,
         symbol: "none",
-        // label: {
-        //   show: true,
-        // },
       },
     ],
   };

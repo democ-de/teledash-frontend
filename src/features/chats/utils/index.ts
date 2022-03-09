@@ -12,7 +12,13 @@ export const createChatBadgesArray = (chat: Chat) => {
       label: startCase(flag.replace("is_", "")),
       variant: "orange",
     }));
-  
+
+  if (chat.language_other) {
+    chat.language_other.forEach(element => {
+      badges.unshift({ label: toUpper(element), variant: "purple" });  
+    });
+  }
+    
   if (chat.language) {
     badges.unshift({ label: toUpper(chat.language), variant: "blue" });
   }    

@@ -21,6 +21,7 @@ import {
 } from "features/search";
 import { MessageList } from "features/messages";
 import { mdiLink, mdiOpenInNew } from "@mdi/js";
+import { FormattedMetricNumber } from "components/Elements/FormattedMetricNumber";
 
 const ActivityChart = ({
   metric,
@@ -288,13 +289,7 @@ export const Chat = () => {
           {/* message count */}
           <Box title="Activity (last 24h)">
             <div className="text-3xl">
-              {messageCountLastDay > 0 ? (
-                <span className="text-green-600">
-                  +{formatNumber(messageCountLastDay)}
-                </span>
-              ) : (
-                0
-              )}
+              <FormattedMetricNumber value={messageCountLastDay} />
             </div>
             <div className="text-sm text-gray-500">
               {formatNumber(messageCountTotal)} messages saved
@@ -304,13 +299,7 @@ export const Chat = () => {
           {/* members count */}
           <Box title="Growth (last 24h)">
             <div className="text-3xl">
-              {membersGrowthLastDay > 0 ? (
-                <span className="text-green-600">
-                  +{formatNumber(membersGrowthLastDay)}
-                </span>
-              ) : (
-                0
-              )}
+              <FormattedMetricNumber value={membersGrowthLastDay} />
             </div>
             <div className="text-sm text-gray-500">
               {formatNumber(membersCountTotal)} users total

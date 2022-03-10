@@ -3,7 +3,7 @@ import { TooltipLink } from "components/Elements";
 import { Chat, ChatRef } from "types";
 
 export const createDisplayNameFromChat = (chat: Chat | ChatRef) =>
-  chat.username || chat.title || chat._id?.toString();
+  chat.title || chat.username || chat._id?.toString();
 
 type ChatLinkProps = {
   chat: Chat | ChatRef;

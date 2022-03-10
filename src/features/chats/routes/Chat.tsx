@@ -4,6 +4,7 @@ import { useCallback } from "react";
 import { useChat, createDisplayNameFromChat, createChatBadgesArray } from "..";
 import {
   Box,
+  Button,
   Spinner,
   Badge,
   ReactECharts,
@@ -236,12 +237,26 @@ export const Chat = () => {
   return (
     <ContentLayout title={createDisplayNameFromChat(chat)}>
       {badgesArray.length > 0 && (
-        <div className="flex items-center space-x-2 whitespace-nowrap mt-1.5 lg:mt-0">
+        <div className="flex items-center space-x-2 whitespace-nowrap mt-1.5 lg:mt-0 relative">         
           {badgesArray.map(({ label, variant }) => (
             <Badge key={label} label={label} variant={variant} />
           ))}
+          <Button
+            variant="secondary"
+            size="xs"
+            className="absolute right-0"
+          >
+            <a 
+              target="_blank" 
+              rel="noreferrer" 
+              href={"https://t.me/" + chat.username}
+            >
+              @{chat.username} 
+            </a>
+          </Button> 
         </div>
       )}
+      
 
       <div className="mt-4 space-y-4 xl:space-y-0 xl:grid xl:grid-cols-2 xl:gap-4">
         {/* descriptions */}
@@ -252,7 +267,7 @@ export const Chat = () => {
         {/* meta info */}
         <div className="space-y-4 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-4 xl:flex xl:items-start">
           {/* message count */}
-          <Box title="Activity last 24h">
+          <Box title="Activity (last 24h)">
             <div className="text-3xl">
               {messageCountLastDay > 0 ? (
                 <span className="text-green-600">
@@ -263,12 +278,12 @@ export const Chat = () => {
               )}
             </div>
             <div className="text-sm text-gray-500">
-              {formatNumber(messageCountTotal)} saved
+              {formatNumber(messageCountTotal)} messages saved
             </div>
           </Box>
 
           {/* members count */}
-          <Box title="Growth last 24h">
+          <Box title="Growth (last 24h)">
             <div className="text-3xl">
               {membersGrowthLastDay > 0 ? (
                 <span className="text-green-600">
@@ -279,7 +294,7 @@ export const Chat = () => {
               )}
             </div>
             <div className="text-sm text-gray-500">
-              {formatNumber(membersCountTotal)} total
+              {formatNumber(membersCountTotal)} users total
             </div>
           </Box>
         </div>

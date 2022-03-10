@@ -2,18 +2,17 @@ import { useParams } from "react-router-dom";
 import { ContentLayout } from "components/Layout";
 import { useCallback } from "react";
 import { useUser, createUserBadgesArray, createDisplayNameFromUser } from "..";
-import { Box, Spinner } from "components/Elements";
+import { Box, Button, Spinner } from "components/Elements";
 import { Badge, ReactECharts, ReactEChartsProps } from "components/Elements";
-import { ReactNode } from "react";
 import { formatNumber } from "utils/formatNumber";
 import { UserMetrics } from "types";
-import { parseDate } from "lib/date";
 import {
   SearchForm,
   UpdateFiltersOptions,
   useFilterStore,
 } from "features/search";
 import { MessageList } from "features/messages";
+import { mdiOpenInNew } from "@mdi/js";
 
 const ActivityChart = ({
   metric,
@@ -75,6 +74,7 @@ const ActivityChart = ({
     },
     yAxis: {
       type: "value",
+      minInterval: 1,
     },
     series: [
       {
@@ -91,8 +91,8 @@ const ActivityChart = ({
   return <ReactECharts option={option} />;
 };
 
-const ChatMessages = ({ chatId }: { chatId: number }) => {
-  const filterId = `chat-filter-${chatId}`;
+const ChatMessages = ({ userId }: { userId: number }) => {
+  const filterId = `chat-filter-${userId}`;
   const filterKey = "messages";
   const createFilter = useFilterStore((state) => state.createFilter);
   const filters = useFilterStore((state) => state.filters);
@@ -103,7 +103,7 @@ const ChatMessages = ({ chatId }: { chatId: number }) => {
       activeKey: filterKey,
       options: {
         messages: {
-          chat_ids: [chatId],
+          from_user_ids: [userId],
         },
       },
     });
@@ -155,21 +155,36 @@ export const User = () => {
   console.warn(user);
   const messageCountLastDay = user.metrics?.activity_last_day?.sum || 0;
   const messageCountTotal = user.metrics?.activity_total?.sum || 0;
-  // const membersGrowthLastDay = user.metrics?.growth_last_day?.diff || 0;
-  // const membersCountTotal = user.members_count || 0;
 
   return (
     <ContentLayout title={createDisplayNameFromUser(user)}>
-      {badgesArray.length > 0 && (
+      {badgesArray && (
         <div className="flex items-center space-x-2 whitespace-nowrap mt-1.5 lg:mt-0">
+          {user.username && (
+            <Button
+              variant="secondary"
+              size="xs"
+              startIcon={mdiOpenInNew}
+              className="hover:underline"
+            >
+              <a 
+                target="_blank" 
+                rel="noreferrer" 
+                href={"https://t.me/" + user.username}
+              >
+                @{user.username} 
+              </a>
+            </Button>
+          )} 
           {badgesArray.map(({ label, variant }) => (
             <Badge key={label} label={label} variant={variant} />
           ))}
         </div>
       )}
 
+
       <div className="mt-4 space-y-4 xl:space-y-0 xl:grid xl:grid-cols-2 xl:gap-4">
-        <Box title="Messages per day">
+        <Box title="Activity">
           <div className="h-80">
             <ActivityChart metric={user.metrics?.activity_total} />
           </div>
@@ -192,29 +207,15 @@ export const User = () => {
             </div>
           </Box>
         </div>
-
-        {/* Activity graph */}
-        {/* <Container title="Activity">
-          <div className="h-80">
-            <ActivityChart metric={user.metrics?.activity_total} />
-          </div>
-        </Container> */}
-
-        {/* Growth graph */}
-        {/* <Container title="Growth">
-          <div className="h-80">
-            <GrowthChart metric={user.metrics?.growth_total} />
-          </div>
-        </Container> */}
       </div>
 
-      {/* Message */}
-      {/* <div className="mt-8">
+      {/* Messages */}
+      <div className="mt-8">
         <h2 className="text-xl font-bold leading-7 sm:text-2xl mb-6">
           Messages
         </h2>
-        <ChatMessages chatId={parseInt(chatId)} />
-      </div> */}
+        <ChatMessages userId={parseInt(userId)} />
+      </div>
     </ContentLayout>
   );
 };

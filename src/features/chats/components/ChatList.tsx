@@ -2,6 +2,7 @@ import { mdiAccountMultiple } from "@mdi/js";
 import Icon from "@mdi/react";
 import { Button, Spinner } from "components/Elements";
 import { Badge, ReactECharts, ReactEChartsProps } from "components/Elements";
+import { FormattedMetricNumber } from "components/Elements/FormattedMetricNumber";
 import { useChats } from "features/chats";
 import { Fragment } from "react";
 import { GetChatsParams } from "types";
@@ -12,6 +13,7 @@ import { createChatBadgesArray } from "..";
 
 const ChatListItem = (props: Chat) => {
   const badgesArray = createChatBadgesArray(props);
+  const membersGrowthLastDay = props.metrics?.growth_last_day?.diff || 0;
   const activityLastDay: ReactEChartsProps["option"] | undefined = props.metrics
     ?.activity_last_day && {
     tooltip: {
@@ -81,6 +83,11 @@ const ChatListItem = (props: Chat) => {
                 <span className="font-medium">
                   {formatNumber(props.members_count)}
                 </span>
+              </div>
+            )}
+            {membersGrowthLastDay !== 0 && (
+              <div className="ml-2">
+                <FormattedMetricNumber value={membersGrowthLastDay} />
               </div>
             )}
           </div>

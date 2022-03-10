@@ -82,7 +82,7 @@ const ActivityChart = ({
     },
     yAxis: {
       type: "value",
-      minInterval: 1,      
+      minInterval: 1,
     },
     series: [
       {
@@ -247,16 +247,10 @@ export const Chat = () => {
               variant="secondary"
               size="xs"
               startIcon={mdiOpenInNew}
-              className="hover:underline"
+              href={"https://t.me/" + chat.username}
+              target="_blank"
             >
-              <a 
-                target="_blank" 
-                rel="noreferrer" 
-                href={"https://t.me/" + chat.username}
-                title="External link to chat"
-              >
-                @{chat.username} 
-              </a>
+              @{chat.username}
             </Button>
           )}
           {chat.linked_chat && (
@@ -268,11 +262,7 @@ export const Chat = () => {
             >
               <TooltipLink
                 tippyProps={{
-                  content: (
-                      <div>
-                        @{chat.linked_chat?.username}
-                      </div>
-                  ),
+                  content: <div>@{chat.linked_chat?.username}</div>,
                   interactive: true,
                 }}
                 to={"../chat/" + chat.linked_chat?._id}
@@ -284,10 +274,9 @@ export const Chat = () => {
           {badgesArray.map(({ label, variant }) => (
             <Badge key={label} label={label} variant={variant} />
           ))}
-          
         </div>
       )}
-      
+
       <div className="mt-4 space-y-4 xl:space-y-0 xl:grid xl:grid-cols-2 xl:gap-4">
         {/* descriptions */}
         <Box title="Description">

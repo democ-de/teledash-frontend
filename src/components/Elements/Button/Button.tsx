@@ -1,8 +1,9 @@
 import * as React from "react";
 import clsx from "clsx";
 import Icon from "@mdi/react";
-
 import { Spinner } from "components/Elements";
+
+// HOWTO conditional anchor or button tag: https://react-typescript-cheatsheet.netlify.app/docs/advanced/patterns_by_usecase/
 
 const variants = {
   primary:
@@ -27,13 +28,17 @@ type IconProps =
   | { endIcon: string; startIcon?: never }
   | { endIcon?: undefined; startIcon?: undefined };
 
-export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: keyof typeof variants;
-  size?: keyof typeof sizes;
-  isLoading?: boolean;
-} & IconProps;
+export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
+  React.AnchorHTMLAttributes<HTMLAnchorElement> & {
+    variant?: keyof typeof variants;
+    size?: keyof typeof sizes;
+    isLoading?: boolean;
+  } & IconProps;
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button = React.forwardRef<
+  HTMLButtonElement & HTMLAnchorElement,
+  ButtonProps
+>(
   (
     {
       type = "button",
@@ -43,25 +48,14 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       isLoading = false,
       startIcon,
       endIcon,
+      href,
+      target,
       ...props
     },
     ref
   ) => {
-    return (
-      <button
-        ref={ref}
-        type={type}
-        className={clsx(
-          "inline-flex items-center justify-center font-medium rounded-md",
-          "focus:outline-none focus:ring-2 focus:ring-offset-2",
-          "border",
-          "disabled:opacity-70 disabled:cursor-not-allowed",
-          variants[variant],
-          sizes[size],
-          className
-        )}
-        {...props}
-      >
+    const content = (
+      <>
         {isLoading && <Spinner size="sm" className="text-current" />}
         {!isLoading && startIcon && (
           <Icon path={startIcon} size={0.9} aria-hidden="true" />
@@ -70,8 +64,31 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {!isLoading && endIcon && (
           <Icon path={endIcon} size={0.9} aria-hidden="true" />
         )}
-      </button>
+      </>
     );
+    const classNames = clsx(
+      "inline-flex items-center justify-center font-medium rounded-md",
+      "focus:outline-none focus:ring-2 focus:ring-offset-2",
+      "border",
+      "disabled:opacity-70 disabled:cursor-not-allowed",
+      variants[variant],
+      sizes[size],
+      className
+    );
+
+    if (href) {
+      return (
+        <a ref={ref} href={href} target={target} className={classNames}>
+          {content}
+        </a>
+      );
+    } else {
+      return (
+        <button ref={ref} type={type} className={classNames}>
+          {content}
+        </button>
+      );
+    }
   }
 );
 

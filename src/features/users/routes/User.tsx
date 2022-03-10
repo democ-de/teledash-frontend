@@ -91,7 +91,7 @@ const ActivityChart = ({
   return <ReactECharts option={option} />;
 };
 
-const ChatMessages = ({ userId }: { userId: number }) => {
+const UserMessages = ({ userId }: { userId: number }) => {
   const filterId = `user-filter-${userId}`;
   const filterKey = "messages";
   const createFilter = useFilterStore((state) => state.createFilter);
@@ -152,7 +152,6 @@ export const User = () => {
 
   const user = userQuery.data;
   const badgesArray = createUserBadgesArray(user);
-  console.warn(user);
   const messageCountLastDay = user.metrics?.activity_last_day?.sum || 0;
   const messageCountTotal = user.metrics?.activity_total?.sum || 0;
 
@@ -165,15 +164,10 @@ export const User = () => {
               variant="secondary"
               size="xs"
               startIcon={mdiOpenInNew}
-              className="hover:underline"
+              href={"https://t.me/" + user.username}
+              target="_blank"
             >
-              <a
-                target="_blank"
-                rel="noreferrer"
-                href={"https://t.me/" + user.username}
-              >
-                @{user.username}
-              </a>
+              @{user.username}
             </Button>
           )}
           {badgesArray.map(({ label, variant }) => (
@@ -213,7 +207,7 @@ export const User = () => {
         <h2 className="text-xl font-bold leading-7 sm:text-2xl mb-6">
           Messages
         </h2>
-        <ChatMessages userId={parseInt(userId)} />
+        <UserMessages userId={parseInt(userId)} />
       </div>
     </ContentLayout>
   );

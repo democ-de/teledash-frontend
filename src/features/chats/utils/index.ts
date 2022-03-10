@@ -1,5 +1,5 @@
 import { BadgeProps } from "components/Elements";
-import { startCase, toUpper } from "lodash";
+import { startCase } from "lodash";
 import { Chat } from "types";
 
 const availableFlags = ["is_verified", "is_restricted", "is_scam", "is_fake"];
@@ -15,12 +15,12 @@ export const createChatBadgesArray = (chat: Chat) => {
 
   if (chat.language_other) {
     chat.language_other.forEach(element => {
-      badges.unshift({ label: toUpper(element), variant: "purple" });  
+      badges.unshift({ label: element.toUpperCase(), variant: "blue" });  
     });
   }
     
   if (chat.language) {
-    badges.unshift({ label: toUpper(chat.language), variant: "blue" });
+    badges.unshift({ label: chat.language.toUpperCase(), variant: "blue" });
   }    
 
   if (chat.type) {

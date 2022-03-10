@@ -9,6 +9,7 @@ import {
   Badge,
   ReactECharts,
   ReactEChartsProps,
+  TooltipLink,
 } from "components/Elements";
 import { formatNumber } from "utils/formatNumber";
 import { ChatMetrics } from "types";
@@ -19,6 +20,7 @@ import {
   useFilterStore,
 } from "features/search";
 import { MessageList } from "features/messages";
+import { mdiLink, mdiOpenInNew } from "@mdi/js";
 
 const ActivityChart = ({
   metric,
@@ -80,6 +82,7 @@ const ActivityChart = ({
     },
     yAxis: {
       type: "value",
+      minInterval: 1,      
     },
     series: [
       {
@@ -152,6 +155,7 @@ const GrowthChart = ({ metric }: { metric: ChatMetrics["growth_total"] }) => {
     },
     yAxis: {
       type: "value",
+      minInterval: 1,
     },
     series: [
       {
@@ -237,27 +241,53 @@ export const Chat = () => {
   return (
     <ContentLayout title={createDisplayNameFromChat(chat)}>
       {badgesArray.length > 0 && (
-        <div className="flex items-center space-x-2 whitespace-nowrap mt-1.5 lg:mt-0 relative">         
+        <div className="flex items-center space-x-2 whitespace-nowrap mt-1.5 lg:mt-0">
+          {chat.username && (
+            <Button
+              variant="secondary"
+              size="xs"
+              startIcon={mdiOpenInNew}
+              className="hover:underline"
+            >
+              <a 
+                target="_blank" 
+                rel="noreferrer" 
+                href={"https://t.me/" + chat.username}
+                title="External link to chat"
+              >
+                @{chat.username} 
+              </a>
+            </Button>
+          )}
+          {chat.linked_chat && (
+            <Button
+              variant="secondary"
+              size="xs"
+              className="hover:underline truncate"
+              startIcon={mdiLink}
+            >
+              <TooltipLink
+                tippyProps={{
+                  content: (
+                      <div>
+                        @{chat.linked_chat?.username}
+                      </div>
+                  ),
+                  interactive: true,
+                }}
+                to={"../chat/" + chat.linked_chat?._id}
+              >
+                {createDisplayNameFromChat(chat.linked_chat)}
+              </TooltipLink>
+            </Button>
+          )}
           {badgesArray.map(({ label, variant }) => (
             <Badge key={label} label={label} variant={variant} />
           ))}
-          <Button
-            variant="secondary"
-            size="xs"
-            className="absolute right-0"
-          >
-            <a 
-              target="_blank" 
-              rel="noreferrer" 
-              href={"https://t.me/" + chat.username}
-            >
-              @{chat.username} 
-            </a>
-          </Button> 
+          
         </div>
       )}
       
-
       <div className="mt-4 space-y-4 xl:space-y-0 xl:grid xl:grid-cols-2 xl:gap-4">
         {/* descriptions */}
         <Box title="Description">
@@ -314,7 +344,7 @@ export const Chat = () => {
         </Box>
       </div>
 
-      {/* Message */}
+      {/* Messages */}
       <div className="mt-8">
         <h2 className="text-xl font-bold leading-7 sm:text-2xl mb-6">
           Messages

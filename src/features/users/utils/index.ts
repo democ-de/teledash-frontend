@@ -20,6 +20,10 @@ export const createUserBadgesArray = (user: User) => {
       label: startCase(flag.replace("is_", "")),
       variant: "orange",
     }));
+  
+  if (user.is_bot !== true) {
+    badges.unshift({ label: "User", variant: "gray" });
+  }
 
   return badges;
 };

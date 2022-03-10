@@ -92,7 +92,7 @@ const ActivityChart = ({
 };
 
 const ChatMessages = ({ userId }: { userId: number }) => {
-  const filterId = `chat-filter-${userId}`;
+  const filterId = `user-filter-${userId}`;
   const filterKey = "messages";
   const createFilter = useFilterStore((state) => state.createFilter);
   const filters = useFilterStore((state) => state.filters);
@@ -167,21 +167,20 @@ export const User = () => {
               startIcon={mdiOpenInNew}
               className="hover:underline"
             >
-              <a 
-                target="_blank" 
-                rel="noreferrer" 
+              <a
+                target="_blank"
+                rel="noreferrer"
                 href={"https://t.me/" + user.username}
               >
-                @{user.username} 
+                @{user.username}
               </a>
             </Button>
-          )} 
+          )}
           {badgesArray.map(({ label, variant }) => (
             <Badge key={label} label={label} variant={variant} />
           ))}
         </div>
       )}
-
 
       <div className="mt-4 space-y-4 xl:space-y-0 xl:grid xl:grid-cols-2 xl:gap-4">
         <Box title="Activity">

@@ -1,4 +1,4 @@
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import {
   QueryClient,
   UseQueryOptions,
@@ -10,7 +10,13 @@ import { PromiseValue } from "type-fest";
 
 const queryConfig: DefaultOptions = {
   queries: {
-    useErrorBoundary: true,
+    // don't catch 404 errors with error boundaries
+    useErrorBoundary: (error) =>
+      axios.isAxiosError(error) &&
+      error.response &&
+      error.response.status === 404
+        ? false
+        : true,
     refetchOnWindowFocus: false,
     retry: false,
   },

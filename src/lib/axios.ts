@@ -34,12 +34,14 @@ axios.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    const message = error.response?.data?.message || error.message;
-    useNotificationStore.getState().addNotification({
-      type: "error",
-      title: "Error",
-      message,
-    });
+    if (error.response?.status !== 404) {
+      const message = error.response?.data?.message || error.message;
+      useNotificationStore.getState().addNotification({
+        type: "error",
+        title: "Error",
+        message,
+      });
+    }
 
     if (error.response?.status === 401) {
       storage.clearToken();

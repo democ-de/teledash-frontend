@@ -13,17 +13,20 @@ const availableFlags = [
 ];
 
 export const createUserBadgesArray = (user: User) => {
-  const propKeys = Object.keys(user) as Array<keyof typeof user>;
-  const badges: BadgeProps[] = propKeys
-    .filter((key) => availableFlags.includes(key) && user[key] === true)
-    .map((flag) => ({
-      label: startCase(flag.replace("is_", "")),
-      variant: "orange",
-    }));
-  
+  const result: BadgeProps[] = [];
+
+  (Object.keys(user) as Array<keyof User>).forEach((key) => {
+    if (user[key] === true && availableFlags.includes(key)) {
+      result.push({
+        label: startCase(key.replace("is_", "")),
+        variant: "orange",
+      });
+    }
+  });
+
   if (user.is_bot !== true) {
-    badges.unshift({ label: "User", variant: "gray" });
+    result.push({ label: "User", variant: "gray" });
   }
 
-  return badges;
+  return result;
 };

@@ -242,13 +242,21 @@ export const Chat = () => {
   return (
     <ContentLayout title={createDisplayNameFromChat(chat)}>
       {badgesArray.length > 0 && (
-        <div className="flex items-center space-x-2 whitespace-nowrap mt-1.5 lg:mt-0">
+        <div className="flex items-center flex-nowrap space-x-2 mt-1.5 lg:mt-0">
+          {badgesArray.map(({ label, variant }) => (
+            <Badge key={label} label={label} variant={variant} />
+          ))}
+        </div>
+      )}
+      {(chat.username || chat.linked_chat) && (
+        <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:flex-nowrap sm:space-y-0 sm:space-x-2 mt-4">
           {chat.username && (
             <Button
               variant="secondary"
               size="xs"
               startIcon={mdiOpenInNew}
               href={"https://t.me/" + chat.username}
+              rel="noopener noreferrer"
               target="_blank"
             >
               @{chat.username}
@@ -258,23 +266,12 @@ export const Chat = () => {
             <Button
               variant="secondary"
               size="xs"
-              className="hover:underline truncate"
               startIcon={mdiLink}
+              to={"../chat/" + chat.linked_chat?._id}
             >
-              <TooltipLink
-                tippyProps={{
-                  content: <div>@{chat.linked_chat?.username}</div>,
-                  interactive: true,
-                }}
-                to={"../chat/" + chat.linked_chat?._id}
-              >
-                {createDisplayNameFromChat(chat.linked_chat)}
-              </TooltipLink>
+              {createDisplayNameFromChat(chat.linked_chat)}
             </Button>
           )}
-          {badgesArray.map(({ label, variant }) => (
-            <Badge key={label} label={label} variant={variant} />
-          ))}
         </div>
       )}
 

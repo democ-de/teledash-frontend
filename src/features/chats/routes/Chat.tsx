@@ -230,6 +230,15 @@ export const Chat = () => {
     );
   }
 
+  if (chatQuery.isError) {
+    return (
+      <ContentLayout title="Chat not found 😒">
+        No data has been collected for the chat with the ID{" "}
+        <strong>{chatId}</strong> yet.
+      </ContentLayout>
+    );
+  }
+
   if (!chatQuery.data) return null;
 
   const chat = chatQuery.data;
@@ -244,7 +253,7 @@ export const Chat = () => {
       {badgesArray.length > 0 && (
         <div className="flex items-center flex-nowrap space-x-2 mt-1.5 lg:mt-0">
           {badgesArray.map(({ label, variant }) => (
-            <Badge key={label} label={label} variant={variant} />
+            <Badge key={label} label={label} variant={variant} size="md" />
           ))}
         </div>
       )}
@@ -253,7 +262,7 @@ export const Chat = () => {
           {chat.username && (
             <Button
               variant="secondary"
-              size="xs"
+              size="sm"
               startIcon={mdiOpenInNew}
               href={"https://t.me/" + chat.username}
               rel="noopener noreferrer"
@@ -265,11 +274,12 @@ export const Chat = () => {
           {chat.linked_chat && (
             <Button
               variant="secondary"
-              size="xs"
+              size="sm"
               startIcon={mdiLink}
-              to={"../chat/" + chat.linked_chat?._id}
+              disabled
+              to={"../chat/" + chat.linked_chat._id}
             >
-              {createDisplayNameFromChat(chat.linked_chat)}
+              Linked Chat ({createDisplayNameFromChat(chat.linked_chat)})
             </Button>
           )}
         </div>
@@ -278,7 +288,13 @@ export const Chat = () => {
       <div className="mt-4 space-y-4 xl:space-y-0 xl:grid xl:grid-cols-2 xl:gap-4">
         {/* descriptions */}
         <Box title="Description">
-          <div className="whitespace-pre-wrap">{chat.description}</div>
+          <div className="whitespace-pre-wrap">
+            {chat.description ? (
+              chat.description
+            ) : (
+              <span className="italic text-gray-500">No description</span>
+            )}
+          </div>
         </Box>
 
         {/* meta info */}

@@ -84,7 +84,7 @@ export const Button = React.forwardRef<
       );
     } else {
       return (
-        <button ref={ref} type={type} className={classNames}>
+        <button ref={ref} type={type} className={classNames} {...props}>
           {content}
         </button>
       );

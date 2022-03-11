@@ -27,7 +27,7 @@ const sizes = {
 
 const iconSizes = {
   xs: 0.6,
-  sm: 0.8,
+  sm: 0.7,
   md: 0.9,
   lg: 1,
 };

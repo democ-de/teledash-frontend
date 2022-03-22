@@ -7,8 +7,6 @@
     "@hookform/resolvers": "^2.8.5",
     "@mdi/js": "^6.5.95",
     "@mdi/react": "^1.5.0",
-    "@tailwindcss/forms": "^0.4.0",
-    "@tailwindcss/line-clamp": "^0.3.1",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
@@ -98,12 +96,14 @@
     "@storybook/node-logger": "^6.4.9",
     "@storybook/preset-create-react-app": "^4.0.0",
     "@storybook/react": "^6.4.9",
+    "@tailwindcss/forms": "^0.5.0",
+    "@tailwindcss/line-clamp": "^0.3.1",
     "@types/lodash": "^4.14.178",
-    "autoprefixer": "^10.4.2",
+    "autoprefixer": "^10.4.4",
     "eslint-config-prettier": "^8.3.0",
-    "postcss": "^8.4.5",
+    "postcss": "^8.4.12",
     "prettier": "2.5.1",
-    "tailwindcss": "^3.0.12",
+    "tailwindcss": "^3.0.23",
     "webpack": "^5.65.0"
   }
 }

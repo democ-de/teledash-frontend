@@ -162,11 +162,11 @@ export const User = () => {
         <div className="flex items-center space-x-2 whitespace-nowrap mt-1.5 lg:mt-0">
           {user.username && (
             <Button
+              as="externalLink"
               variant="secondary"
               size="xs"
               startIcon={mdiOpenInNew}
               href={"https://t.me/" + user.username}
-              target="_blank"
             >
               @{user.username}
             </Button>

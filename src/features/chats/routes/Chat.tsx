@@ -261,6 +261,7 @@ export const Chat = () => {
         <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:flex-nowrap sm:space-y-0 sm:space-x-2 mt-4">
           {chat.username && (
             <Button
+              as="externalLink"
               variant="secondary"
               size="sm"
               startIcon={mdiOpenInNew}
@@ -273,10 +274,10 @@ export const Chat = () => {
           )}
           {chat.linked_chat && (
             <Button
+              as="link"
               variant="secondary"
               size="sm"
               startIcon={mdiLink}
-              disabled
               to={"../chat/" + chat.linked_chat._id}
             >
               Linked Chat ({createDisplayNameFromChat(chat.linked_chat)})

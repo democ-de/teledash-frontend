@@ -1,11 +1,11 @@
 import * as React from "react";
-import { Link, LinkProps } from "react-router-dom";
+import { Link } from "react-router-dom";
+import type { LinkProps } from "react-router-dom";
 import clsx from "clsx";
 import Icon from "@mdi/react";
 import { Spinner } from "components/Elements";
-import { NavLinkProps } from "react-router-dom";
 
-// HOWTO conditional anchor or button tag: https://react-typescript-cheatsheet.netlify.app/docs/advanced/patterns_by_usecase/
+// credits: https://dev.to/frehner/polymorphic-button-component-in-typescript-c28
 
 const variants = {
   primary:
@@ -37,32 +37,42 @@ type IconProps =
   | { endIcon: string; startIcon?: never }
   | { endIcon?: undefined; startIcon?: undefined };
 
-export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
-  React.AnchorHTMLAttributes<HTMLAnchorElement> &
-  Partial<LinkProps> & {
-    variant?: keyof typeof variants;
-    size?: keyof typeof sizes;
-    isLoading?: boolean;
-  } & IconProps;
+type BaseProps = {
+  children: React.ReactNode;
+  variant?: keyof typeof variants;
+  size?: keyof typeof sizes;
+  isLoading?: boolean;
+} & IconProps;
 
-export const Button = React.forwardRef<
-  HTMLButtonElement & HTMLAnchorElement,
-  ButtonProps
->(
+type ButtonAsButton = BaseProps &
+  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof BaseProps> & {
+    as?: "button";
+  };
+
+type ButtonAsLink = BaseProps &
+  Omit<LinkProps, keyof BaseProps> & {
+    as: "link";
+  };
+
+type ButtonAsExternal = BaseProps &
+  Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof BaseProps> & {
+    as: "externalLink";
+  };
+
+type ButtonProps = ButtonAsButton | ButtonAsExternal | ButtonAsLink;
+
+export const Button = React.forwardRef(
   (
     {
-      type = "button",
-      className = "",
       variant = "primary",
       size = "md",
       isLoading = false,
       startIcon,
       endIcon,
-      href,
-      to,
+      className = "",
       ...props
-    },
-    ref
+    }: ButtonProps,
+    ref: any
   ) => {
     const content = (
       <>
@@ -96,21 +106,32 @@ export const Button = React.forwardRef<
       className
     );
 
-    if (href) {
+    if (props.as === "link") {
+      // don't pass unnecessary props to component
+      const { as, ...rest } = props;
       return (
-        <a ref={ref} href={href} className={classNames} {...props}>
-          {content}
-        </a>
-      );
-    } else if (to) {
-      return (
-        <Link ref={ref} to={to} className={classNames} {...props}>
+        <Link ref={ref} className={classNames} {...rest}>
           {content}
         </Link>
       );
-    } else {
+    } else if (props.as === "externalLink") {
+      const { as, ...rest } = props;
       return (
-        <button ref={ref} type={type} className={classNames} {...props}>
+        <a
+          ref={ref}
+          className={classNames}
+          // provide good + secure defaults while still allowing them to be overwritten
+          target="_blank"
+          rel="noopener noreferrer"
+          {...rest}
+        >
+          {content}
+        </a>
+      );
+    } else {
+      const { as, ...rest } = props;
+      return (
+        <button ref={ref} className={classNames} {...rest}>
           {content}
         </button>
       );

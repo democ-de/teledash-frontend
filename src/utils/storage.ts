@@ -1,4 +1,4 @@
-const storagePrefix = "arst_";
+const storagePrefix = "teledash_";
 
 const storage = {
   getToken: () => {

@@ -1,4 +1,4 @@
-import { mdiPaperclip, mdiShare } from "@mdi/js";
+import { mdiPaperclip, mdiShare, mdiEye } from "@mdi/js";
 import Icon from "@mdi/react";
 import clsx from "clsx";
 import { ChatLink } from "features/chats";
@@ -104,7 +104,15 @@ export const Message = (props: MessageType) => {
 
         {/* Date */}
         {(props.date || props.edit_date) && (
-          <div className="flex pr-1 justify-end text-gray-500 text-xs sm:text-sm">
+          <div className="flex pr-1 float-right text-gray-500 text-xs sm:text-sm">
+            {props.views && (
+              <div className="flex items-center">
+                <span className="text-gray-500 mr-1 whitespace-nowrap">
+                  {props.views}
+                </span>
+                <Icon path={mdiEye} size={0.7} className="text-gray-500 mr-2" />
+              </div>
+            )}
             <span title={props.date && formatDate(parseDate(props.date))}>
               {props.edit_date
                 ? "Edited: " + formatDateDistance(parseDate(props.edit_date))

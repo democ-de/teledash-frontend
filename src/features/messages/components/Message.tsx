@@ -1,4 +1,4 @@
-import { mdiPaperclip, mdiShare, mdiEye } from "@mdi/js";
+import { mdiPaperclip, mdiShare, mdiEye, mdiOpenInNew } from "@mdi/js";
 import Icon from "@mdi/react";
 import clsx from "clsx";
 import { ChatLink } from "features/chats";
@@ -102,24 +102,47 @@ export const Message = (props: MessageType) => {
           </div>
         )}
 
-        {/* Date */}
-        {(props.date || props.edit_date) && (
-          <div className="flex pr-1 float-right text-gray-500 text-xs sm:text-sm">
-            {props.views && (
-              <div className="flex items-center">
-                <span className="text-gray-500 mr-1 whitespace-nowrap">
-                  {props.views}
-                </span>
-                <Icon path={mdiEye} size={0.7} className="text-gray-500 mr-2" />
-              </div>
-            )}
-            <span title={props.date && formatDate(parseDate(props.date))}>
+        {/* Meta info */}
+        <div className="flex float-right text-gray-500 text-xs sm:text-sm">
+          {/* Views */}
+          {props.views && (
+            <div className="flex items-center mr-2">
+              <span className="mr-1">{props.views}</span>
+              <Icon path={mdiEye} size={0.7} />
+            </div>
+          )}
+
+          {/* Date */}
+          {(props.date || props.edit_date) && (
+            <span
+              className={"mr-1"}
+              title={props.date && formatDateDistance(parseDate(props.date))}
+            >
               {props.edit_date
-                ? "Edited: " + formatDateDistance(parseDate(props.edit_date))
-                : props.date && formatDateDistance(parseDate(props.date))}
+                ? "Edited " + formatDate(parseDate(props.edit_date))
+                : props.date && formatDate(parseDate(props.date))}
             </span>
-          </div>
-        )}
+          )}
+
+          {/* External link to message */}
+          {props.chat?.username && props._id && (
+            <div className="flex items-center">
+              <a
+                href={
+                  "https://t.me/s/" +
+                  props.chat.username +
+                  "/" +
+                  props._id.substring(props._id.lastIndexOf(":") + 1)
+                }
+                rel="noreferrer"
+                target="_blank"
+                className="px-1 hover:text-black"
+              >
+                <Icon path={mdiOpenInNew} size={0.65} />
+              </a>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

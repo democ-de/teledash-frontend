@@ -117,6 +117,16 @@ const parseAttachment = async (
         result.downloadUrl = `/storage/${ref.bucket}/${ref.object}`;
       }
     }
+
+    // if (small) photo has no thumbnail use it as thumbnail
+    if (!result?.thumbnail && attachment.type === "photo") {
+      if (result.downloadUrl) {
+        const objectURL = await createObjectURL(result.downloadUrl);
+        if (objectURL) {
+          result.thumbnail = objectURL;
+        }
+      }
+    }
   }
 
   // parse webpage
@@ -231,7 +241,9 @@ export const Attachment = (props: MessageType) => {
           <img
             src={parsedAttachment.thumbnail}
             alt=""
-            className={clsx({ "cursor-pointer": parsedAttachment.downloadUrl })}
+            className={clsx("w-full", {
+              "cursor-pointer": parsedAttachment.downloadUrl,
+            })}
             onClick={() => !fileIsDownloading && loadFile()}
           />
         );
@@ -299,7 +311,7 @@ export const Attachment = (props: MessageType) => {
                 disabled={fileIsDownloading}
                 onClick={() => loadFile(true)}
               >
-                Download {attachment.type}
+                Download {startCase(attachment.type)}
               </Button>
             )}
 

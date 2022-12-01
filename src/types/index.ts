@@ -19,6 +19,7 @@ export type MessageAttachmentType =
   API.components["schemas"]["MessageAttachmentType"];
 export type MessageAttachmentStorageRef =
   API.components["schemas"]["MessageAttachmentStorageRef"];
+export type MessageEntity = API.components["schemas"]["MessageEntity"];
 
 export type GetUsersParams = API.paths["/users"]["get"]["parameters"]["query"];
 export type GetUsersResponse =

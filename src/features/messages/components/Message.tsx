@@ -1,19 +1,27 @@
 import { mdiPaperclip, mdiShare, mdiEye, mdiOpenInNew } from "@mdi/js";
 import Icon from "@mdi/react";
 import clsx from "clsx";
+import parse from "html-react-parser";
 import { ChatLink } from "features/chats";
 import { createDisplayNameFromUser, UserLink } from "features/users";
 import { formatDate, formatDateDistance, parseDate } from "lib/date";
 import { Message as MessageType } from "types";
 import { Attachment } from ".";
+import { parseTelegramEntities } from "..";
 
 export const Message = (props: MessageType) => {
   const messageText = props.text || props.caption;
+  const messageEntities = props.entities || props.caption_entities;
   const reply = props.reply_to_message;
   const replyText = reply?.text || reply?.caption;
   const forward = props.forward;
   let forwardName;
   let fromUserOrChat;
+
+  const formattedMessageText =
+    messageEntities && messageText
+      ? parseTelegramEntities(messageText, messageEntities)
+      : messageText;
 
   if (forward) {
     if (forward.sender_name) {
@@ -96,9 +104,9 @@ export const Message = (props: MessageType) => {
         {/* Attachment */}
         {props.attachment && <Attachment {...props} />}
 
-        {messageText && (
+        {formattedMessageText && (
           <div className="px-1 whitespace-pre-wrap truncate text-sm sm:text-base">
-            {messageText}
+            {parse(formattedMessageText)}
           </div>
         )}
 

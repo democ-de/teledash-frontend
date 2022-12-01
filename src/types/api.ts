@@ -102,9 +102,15 @@ export interface components {
        * @default true
        */
       is_active?: boolean;
-      /** Is Superuser */
+      /**
+       * Is Superuser
+       * @default false
+       */
       is_superuser?: boolean;
-      /** Is Verified */
+      /**
+       * Is Verified
+       * @default false
+       */
       is_verified?: boolean;
       /** First Name */
       first_name: string;
@@ -137,9 +143,15 @@ export interface components {
        * @default true
        */
       is_active?: boolean;
-      /** Is Superuser */
+      /**
+       * Is Superuser
+       * @default false
+       */
       is_superuser?: boolean;
-      /** Is Verified */
+      /**
+       * Is Verified
+       * @default false
+       */
       is_verified?: boolean;
       /** First Name */
       first_name: string;
@@ -202,7 +214,10 @@ export interface components {
       username: string;
       /** Password */
       password: string;
-      /** Scope */
+      /**
+       * Scope
+       * @default
+       */
       scope?: string;
       /** Client Id */
       client_id?: string;
@@ -358,7 +373,10 @@ export interface components {
       user_id?: number;
       /** Chats */
       chats?: components["schemas"]["ChatRef"][];
-      /** Is Active */
+      /**
+       * Is Active
+       * @default false
+       */
       is_active?: boolean;
       /**
        * Created At
@@ -375,7 +393,10 @@ export interface components {
     };
     /**
      * ClientCreateSession
-     * @example [object Object]
+     * @example {
+     *   "phone_code_hash": "f00a1d1bcbfd3aee00",
+     *   "phone_code": "12345"
+     * }
      */
     ClientCreateSession: {
       /** Phone Code Hash */
@@ -509,6 +530,47 @@ export interface components {
       | "web_page"
       | "dice"
       | "game";
+    /** MessageEntity */
+    MessageEntity: {
+      type: components["schemas"]["MessageEntityType"];
+      /** Offset */
+      offset: number;
+      /** Length */
+      length: number;
+      /** Url */
+      url?: string;
+      user?: components["schemas"]["UserRef"];
+      /** Language */
+      language?: string;
+      /** Custom Emoji Id */
+      custom_emoji_id?: number;
+    };
+    /**
+     * MessageEntityType
+     * @description An enumeration.
+     * @enum {string}
+     */
+    MessageEntityType:
+      | "mention"
+      | "hashtag"
+      | "cashtag"
+      | "bot_command"
+      | "url"
+      | "email"
+      | "phone_number"
+      | "bold"
+      | "italic"
+      | "underline"
+      | "strikethrough"
+      | "spoiler"
+      | "code"
+      | "pre"
+      | "blockquote"
+      | "text_link"
+      | "text_mention"
+      | "bank_card"
+      | "custom_emoji"
+      | "unknown";
     /** MessageForward */
     MessageForward: {
       from_user?: components["schemas"]["UserRef"];
@@ -574,11 +636,11 @@ export interface components {
       /** Text */
       text?: string;
       /** Entities */
-      entities?: { [key: string]: unknown }[];
+      entities?: components["schemas"]["MessageEntity"][];
       /** Caption */
       caption?: string;
       /** Caption Entities */
-      caption_entities?: { [key: string]: unknown }[];
+      caption_entities?: components["schemas"]["MessageEntity"][];
       /** Views */
       views?: number;
       /** Is Outgoing */

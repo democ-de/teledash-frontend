@@ -1,7 +1,6 @@
 import { MessageEntity } from "types";
 
-// Inspired by https://gist.github.com/chuv1/9641abc8a5a1a9b3bb8c9177fb7ffa9e?permalink_comment_id=4213791
-// TODO: Fix nested entities
+// Inspired by https://gist.github.com/chuv1/9641abc8a5a1a9b3bb8c9177fb7ffa9e
 export const parseTelegramEntities = function (
   text: string,
   entities: Array<MessageEntity>
@@ -10,80 +9,99 @@ export const parseTelegramEntities = function (
     return text;
   }
 
-  let html = "";
+  var tags: Array<{
+    index: number;
+    tag: string;
+  }> = [];
 
-  entities.forEach((entity, index) => {
-    // Characters before entity
-    if (index === 0) {
-      html += text.slice(0, entity.offset);
+  entities.forEach((entity) => {
+    const startTag = getTag(entity, text);
+
+    if (!startTag) {
+      return;
     }
 
-    // Handle entity transformation
-    const entityText = text.slice(entity.offset, entity.offset + entity.length);
+    let searchTag = tags.filter((tag) => tag.index === entity.offset);
 
-    switch (entity.type) {
-      case "mention":
-        html += `
-        <a href="https://t.me/s/${entityText.replace(
-          "@",
-          ""
-        )}" class="text-indigo-800 hover:underline" target="_blank">${entityText}</a>`;
-        break;
-      // TODO: hashtag, cashtag, bot_command
-      case "url":
-        html += `<a href="${entityText}" class="text-indigo-800" target="_blank" rel="noreferrer">${entityText}</a>`;
-        break;
-      case "email":
-        html += `<a class="text-indigo-800 hover:underline" href="mailto:${entityText}">${entityText}</a>`;
-        break;
-      case "phone_number":
-        html += `<a class="text-indigo-800 hover:underline" href="tel:${entityText}">${entityText}</a>`;
-        break;
-      case "bold":
-        html += `<b>${entityText}</b>`;
-        break;
-      case "italic":
-        html += `<i>${entityText}</i>`;
-        break;
-      case "underline":
-        html += `<ins>${entityText}</ins>`;
-        break;
-      case "strikethrough":
-        html += `<strike>${entityText}</strike>`;
-        break;
-      case "spoiler":
-        html += `[SPOILER]${entityText}[/SPOILER]`;
-        break;
-      case "code":
-        html += `<code>${entityText}</code>`;
-        break;
-      case "pre":
-        html += `<pre>${entityText}</pre>`;
-        break;
-      case "blockquote":
-        html += `<blockquote>${entityText}</blockquote>`;
-        break;
-      case "text_link":
-        html += `<a class="text-indigo-800 hover:underline" href="${entity.url}" target="_blank" rel="noreferrer">${entityText}</a>`;
-        break;
-      // TODO: text_mention, bank_card, custom_emoji
-      default:
-        html += `${entityText}`;
+    if (searchTag.length > 0) {
+      searchTag[0].tag += startTag;
+    } else {
+      tags.push({
+        index: entity.offset,
+        tag: startTag,
+      });
     }
 
-    // Characters after entity but before next entity
-    if (entities.length > index + 1) {
-      html += text.slice(
-        entity.offset + entity.length,
-        entities[index + 1].offset
-      );
-    }
+    const closeTag =
+      startTag.indexOf("<a ") === 0 ? "</a>" : "</" + startTag.slice(1);
+    searchTag = tags.filter(
+      (tag) => tag.index === entity.offset + entity.length
+    );
 
-    // Last characters after last entity
-    if (entities.length === index + 1) {
-      html += text.slice(entity.offset + entity.length);
+    if (searchTag.length > 0) {
+      searchTag[0].tag = closeTag + searchTag[0].tag;
+    } else {
+      tags.push({
+        index: entity.offset + entity.length,
+        tag: closeTag,
+      });
     }
   });
 
+  let html = "";
+  for (let i = 0; i < text.length; i++) {
+    const tag = tags.filter((tag) => tag.index === i);
+    tags = tags.filter((tag) => tag.index !== i);
+    if (tag.length > 0) html += tag[0].tag;
+    html += text[i];
+  }
+  if (tags.length > 0) html += tags[0].tag;
+
   return html;
+};
+
+const urlWithHttps = function (entityText: string) {
+  return entityText.replace(
+    /^(?:(.*:)?\/\/)?(.*)/i,
+    (match, schemma, nonSchemmaUrl) =>
+      schemma ? match : `https://${nonSchemmaUrl}`
+  );
+};
+
+const getTag = function (entity: MessageEntity, text: string) {
+  const entityText = text.slice(entity.offset, entity.offset + entity.length);
+  const linkClass = `class="text-indigo-800 hover:underline" target="_blank" rel="noreferrer"`;
+
+  switch (entity.type) {
+    // TODO: hashtag, cashtag, bot_command, text_mention, bank_card, custom_emoji
+    case "mention":
+      return `<a href="https://t.me/${entityText.replace(
+        "@",
+        ""
+      )}" ${linkClass}>`;
+    case "url":
+      return `<a href="${urlWithHttps(entityText)}" ${linkClass}>`;
+    case "email":
+      return `<a href="mailto:${entityText}" ${linkClass}>`;
+    case "phone_number":
+      return `<a href="tel:${entityText}" ${linkClass}>`;
+    case "bold":
+      return `<strong>`;
+    case "italic":
+      return `<i>`;
+    case "underline":
+      return `<u>`;
+    case "strikethrough":
+      return `<s>`;
+    case "spoiler":
+      return `<mark>`;
+    case "code":
+      return `<code>`;
+    case "pre":
+      return `<pre>`;
+    case "blockquote":
+      return `<blockquote>`;
+    case "text_link":
+      return `<a href="${entity.url}" ${linkClass}>`;
+  }
 };

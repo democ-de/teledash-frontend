@@ -1,3 +1,5 @@
+_**Attention: This repository will no longer be maintained. A new release is under development. Find updates about the upcoming release here: [arai-telegram.github.io](https://arai-telegram.github.io/)**_
+
 # Teledash Frontend
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
